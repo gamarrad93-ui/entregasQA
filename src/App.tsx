@@ -53,14 +53,17 @@ function Encabezado({ usuario }: { usuario: Usuario | null }) {
   return (
     <header className="relative z-20 border-b border-slate-200 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-900/95">
       <div className="h-1 bg-gradient-to-r from-brand-700 via-celeste to-turquesa" aria-hidden />
-      <div className="relative overflow-hidden">
-        {/* Bandas diagonales en azules, como la plantilla de los teóricos del curso */}
-        <svg aria-hidden className="pointer-events-none absolute right-0 top-0 hidden h-full w-96 opacity-90 sm:block" viewBox="0 0 400 100" preserveAspectRatio="none">
-          <polygon points="250,0 400,0 400,100 190,100" fill="#b0d1f1" opacity="0.55" />
-          <polygon points="300,0 400,0 400,100 250,100" fill="#4a92d4" opacity="0.7" />
-          <polygon points="340,0 400,0 400,100 300,100" fill="#0f6fc6" />
-          <polygon points="372,0 400,0 400,100 352,100" fill="#009dd9" />
-        </svg>
+      <div className="relative">
+        {/* Bandas diagonales en azules, como la plantilla de los teóricos del curso.
+            Van en su propia capa recortada para no recortar el menú del usuario. */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+          <svg className="absolute right-0 top-0 hidden h-full w-96 opacity-90 sm:block" viewBox="0 0 400 100" preserveAspectRatio="none">
+            <polygon points="250,0 400,0 400,100 190,100" fill="#b0d1f1" opacity="0.55" />
+            <polygon points="300,0 400,0 400,100 250,100" fill="#4a92d4" opacity="0.7" />
+            <polygon points="340,0 400,0 400,100 300,100" fill="#0f6fc6" />
+            <polygon points="372,0 400,0 400,100 352,100" fill="#009dd9" />
+          </svg>
+        </div>
         <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-2 px-4 py-2">
           <div className="min-w-0">
             <h1 className="font-titulo text-xl text-brand-700 dark:text-brand-300 sm:text-2xl">⚗️ {APP_NAME}</h1>
@@ -76,7 +79,7 @@ function Encabezado({ usuario }: { usuario: Usuario | null }) {
                   👤 <span className="hidden max-w-[12rem] truncate sm:inline">{usuario.nombre}</span> ▾
                 </button>
                 {menu && (
-                  <div role="menu" className="absolute right-0 mt-1 w-64 rounded-xl border border-slate-200 bg-white p-2 shadow-lg dark:border-slate-700 dark:bg-slate-900" onClick={() => setMenu(false)}>
+                  <div role="menu" className="absolute right-0 z-50 mt-1 w-64 rounded-xl border border-slate-200 bg-white p-2 shadow-lg dark:border-slate-700 dark:bg-slate-900" onClick={() => setMenu(false)}>
                     <div className="px-2 pb-2 text-sm">
                       <div className="font-semibold">{usuario.nombre}</div>
                       <div className="text-slate-500">
