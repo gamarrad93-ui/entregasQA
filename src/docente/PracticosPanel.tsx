@@ -1,8 +1,11 @@
 /**
  * Pestaña "Prácticos" del docente: activar/desactivar y fecha límite.
- * (Reabrir entregas y publicar devoluciones llegan en la etapa 3.)
+ * Publicar la devolución de todo el práctico (cada alumno ve la suya).
+ * Reabrir una entrega puntual se hace desde la pestaña Entregas.
  */
 import { useCallback, useEffect, useState } from 'react';
+import { obtenerAjustes } from '../lib/ajustes';
+import { armarRenglones, cargarDatosDocente, publicarPractico } from '../lib/docente';
 import { actualizarPractico, fechaHora, listarPracticos, type PracticoConfig } from '../lib/entregas';
 import { mensajeError } from '../lib/supabase';
 import { definicion, nombreCorto } from '../practicos/registro';
@@ -30,6 +33,20 @@ export default function PracticosPanel() {
   useEffect(() => {
     cargar();
   }, [cargar]);
+
+  async function publicar(id: string, valor: boolean) {
+    if (!confirm(valor ? '¿Publicar la devolución de TODAS las entregas de este práctico? Cada alumno va a ver su ✓/✗ final y tus comentarios.' : '¿Ocultar la devolución de este práctico a los alumnos?')) return;
+    setError(null);
+    setOk(null);
+    try {
+      const [d, aj] = await Promise.all([cargarDatosDocente(), obtenerAjustes()]);
+      await publicarPractico(id, armarRenglones(d, aj), valor);
+      setOk(valor ? 'Devolución publicada para todo el práctico.' : 'Devolución oculta.');
+      await cargar();
+    } catch (e) {
+      setError(mensajeError(e));
+    }
+  }
 
   async function cambiar(id: string, cambios: Partial<PracticoConfig>, msg: string) {
     setError(null);
@@ -89,6 +106,14 @@ export default function PracticosPanel() {
                 Quitar fecha límite
               </button>
             )}
+          </div>
+          <div className="flex flex-wrap items-center gap-2 border-t border-slate-200 pt-3 dark:border-slate-800">
+            <span className="text-sm">
+              Devolución: <strong>{pr.devolucion_publicada ? 'publicada para todos' : 'no publicada (o publicada solo a algunos desde Entregas)'}</strong>
+            </span>
+            <button className={`btn ${pr.devolucion_publicada ? '' : 'btn-primary'}`} onClick={() => publicar(pr.id, !pr.devolucion_publicada)}>
+              {pr.devolucion_publicada ? '🙈 Ocultar devolución' : '📬 Publicar devolución de todo el práctico'}
+            </button>
           </div>
         </div>
       ))}

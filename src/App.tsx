@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import AlumnoHome from './alumno/AlumnoHome';
 import { esDocente, useAuth } from './auth/AuthProvider';
 import CambiarClave from './auth/CambiarClave';
 import Login from './auth/Login';
 import { APP_NAME, AUTHOR, COURSE } from './config';
-import DocenteHome from './docente/DocenteHome';
 import { formatearCedula } from './lib/cedula';
 import { supabase } from './lib/supabase';
 import { useDisplay } from './ui/display';
+
+// La vista del docente (motor de corrección, ecuaciones) se descarga solo si entra un docente
+const DocenteHome = lazy(() => import('./docente/DocenteHome'));
 
 export default function App() {
   const { cargando, session, perfil, aviso, salir, recargarPerfil } = useAuth();
@@ -19,7 +21,12 @@ export default function App() {
   else if (!session || !perfil) contenido = <Login aviso={aviso} />;
   else if (perfil.debe_cambiar_clave) contenido = <CambiarClave obligatorio alTerminar={recargarPerfil} />;
   else if (cambiando) contenido = <CambiarClave alTerminar={() => setCambiando(false)} />;
-  else if (esDocente(perfil)) contenido = <DocenteHome perfil={perfil} />;
+  else if (esDocente(perfil))
+    contenido = (
+      <Suspense fallback={<p className="p-8 text-center text-slate-500">Cargando…</p>}>
+        <DocenteHome perfil={perfil} />
+      </Suspense>
+    );
   else contenido = <AlumnoHome perfil={perfil} />;
 
   return (
