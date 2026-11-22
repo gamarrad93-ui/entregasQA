@@ -25,6 +25,7 @@ import { normalizarPlanilla, validarPlanilla } from '../practicos/planilla';
 import { nombreCorto } from '../practicos/registro';
 import Planilla from '../ui/Planilla';
 import { ChipEstado } from './AlumnoHome';
+import Devolucion from './Devolucion';
 
 type Guardado = 'guardado' | 'pendiente' | 'guardando' | 'local' | 'cerrada';
 
@@ -206,6 +207,8 @@ export default function PantallaEntrega(props: {
           <p className="aviso aviso-info">✏️ Tenés cambios que todavía <strong>no enviaste</strong>. Tu docente ve la versión que enviaste antes.</p>
         )}
       </div>
+
+      {estado === 'devuelto' && fila && <Devolucion entregaId={fila.id} />}
 
       <Planilla p={p} valor={planilla} onChange={cambiar} ajustes={AJUSTES} errores={errores} soloLectura={!puedeEditar} />
 

@@ -100,3 +100,17 @@ export async function actualizarPractico(id: string, cambios: Partial<Omit<Pract
   const { error } = await sb().from('practicos').update(cambios).eq('id', id);
   if (error) throw error;
 }
+
+export interface DevolucionAlumno {
+  comentario: string;
+  items: { etiqueta: string; unidad?: string; fila?: number; alumno: string; ok: boolean | null; comentario?: string }[] | null;
+  nota: number | null;
+  actualizada: string;
+}
+
+/** La devolución publicada (si el docente no la publicó, el servidor no devuelve nada). */
+export async function miDevolucion(entregaId: string): Promise<DevolucionAlumno | null> {
+  const { data, error } = await sb().from('devoluciones').select('comentario, items, nota, actualizada').eq('entrega', entregaId).maybeSingle();
+  if (error) throw error;
+  return (data as DevolucionAlumno) ?? null;
+}

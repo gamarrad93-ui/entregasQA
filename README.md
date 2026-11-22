@@ -7,7 +7,7 @@ Web app para que los alumnos **entreguen las planillas de los prácticos** desde
 - Backend: **Supabase** (plan gratis): usuarios (Auth) + base Postgres con **Row Level Security (RLS)**.
 - Motor de corrección: TypeScript puro en `src/chem/practicos/` (copiado de AnaliticAPP, commit `812dc08`).
 
-> Estado: **etapa 2** (planilla y entrega del alumno). Por ahora solo está habilitado **P1** (decisión preliminar hasta que el
+> Estado: **etapa 3** (vista del docente, corrección y anulaciones). Por ahora solo está habilitado **P1** (decisión preliminar hasta que el
 > docente defina cómo se corrige). Las demás etapas se van agregando con un Pull Request cada una.
 
 ---
@@ -114,6 +114,17 @@ editar y volver a enviar su entrega hasta esa fecha; después queda cerrada (tam
 2. Lo que escribe se guarda solo: al instante en el celular y en el servidor a los pocos segundos (“✓ Borrador guardado”).
 3. **Enviar entrega**: la app revisa que no falte nada y que los números estén bien escritos (nunca muestra si están bien
    calculados). La versión enviada es la que ve el docente; si después cambia algo, tiene que tocar **Volver a enviar**.
+
+### Corregir (pestaña Entregas)
+- La tabla muestra un renglón por alumno y práctico, con filtros por práctico, grupo, estado, nombre/cédula y “solo con errores”.
+- Al abrir una entrega se ve cada valor del alumno contra el recalculado por el motor (**Auto** ✓/✗), el **error probable**
+  (diagnóstico del motor) y el **procedimiento**.
+- **Cambiar** pone el veredicto contrario (✓ ↔ ✗) con un comentario opcional. Se guarda aparte (tabla `anulaciones`):
+  el resultado automático nunca se pisa, el ítem queda marcado **✋ anulado** y la nota usa tu veredicto.
+  **Deshacer** vuelve al automático (queda el historial).
+- **Reabrir para el alumno**: puede volver a editar y enviar aunque haya pasado la fecha límite.
+- **Publicar devolución** (por entrega, o en Prácticos para todo el práctico): el alumno ve su ✓/✗ final por valor,
+  los comentarios y la nota. Nunca ve los valores correctos ni el diagnóstico del motor.
 
 ### Blanquear una contraseña
 Pestaña **Padrón** → **Blanquear contraseña** → cédula → **Blanquear**. Aparece la contraseña temporal: dásela al alumno.

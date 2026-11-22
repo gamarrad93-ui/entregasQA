@@ -4,6 +4,7 @@ import type { Perfil } from '../auth/AuthProvider';
 import Proximamente from '../ui/Proximamente';
 import BlanquearClave from './BlanquearClave';
 import DocentesPanel from './DocentesPanel';
+import EntregasPanel from './EntregasPanel';
 import PracticosPanel from './PracticosPanel';
 
 const PESTANAS = [
@@ -56,7 +57,7 @@ export default function DocenteHome({ perfil }: { perfil: Perfil }) {
           ))}
         </ul>
       </nav>
-      {activa === 'entregas' && <Proximamente titulo="Entregas y corrección" etapa={3} />}
+      {activa === 'entregas' && <EntregasPanel />}
       {activa === 'tendencias' && <Proximamente titulo="Tendencias" etapa={4} />}
       {activa === 'practicos' && <PracticosPanel />}
       {activa === 'padron' && (
