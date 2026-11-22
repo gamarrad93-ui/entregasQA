@@ -3,8 +3,8 @@
  * públicas: pueden ir acá sin problema. La clave "service_role" / "secret"
  * NUNCA va en este archivo ni en ningún lugar del repositorio.
  */
-const URL_PROYECTO = ''; // ej. 'https://abcdefgh.supabase.co'
-const CLAVE_PUBLICA = ''; // la "anon public" o "publishable" (empieza con eyJ… o sb_publishable_…)
+const URL_PROYECTO = 'https://wsrxmnbwwypbtevdlcgr.supabase.co'; // ej. 'https://abcdefgh.supabase.co'
+const CLAVE_PUBLICA = 'sb_publishable_GdLVgWWA2UNLiH24vExF7g_wKe0nFCw'; // la "anon public" o "publishable" (empieza con eyJ… o sb_publishable_…)
 
 export const SUPABASE_URL: string = import.meta.env.VITE_SUPABASE_URL || URL_PROYECTO;
 export const SUPABASE_ANON_KEY: string = import.meta.env.VITE_SUPABASE_ANON_KEY || CLAVE_PUBLICA;
