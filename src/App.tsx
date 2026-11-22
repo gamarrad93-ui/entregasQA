@@ -75,7 +75,7 @@ function Encabezado({ usuario }: { usuario: Usuario | null }) {
             </button>
             {usuario && (
               <div className="relative">
-                <button className="btn" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-haspopup="menu">
+                <button className="btn whitespace-nowrap" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-haspopup="menu" aria-label="Menú de usuario">
                   👤 <span className="hidden max-w-[12rem] truncate sm:inline">{usuario.nombre}</span> ▾
                 </button>
                 {menu && (

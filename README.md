@@ -7,7 +7,8 @@ Web app para que los alumnos **entreguen las planillas de los prácticos** desde
 - Backend: **Supabase** (plan gratis): usuarios (Auth) + base Postgres con **Row Level Security (RLS)**.
 - Motor de corrección: TypeScript puro en `src/chem/practicos/` (copiado de AnaliticAPP, commit `812dc08`).
 
-> Estado: **etapa 1** (proyecto, Supabase, login y roles). Las demás etapas se van agregando con un Pull Request cada una.
+> Estado: **etapa 2** (planilla y entrega del alumno). Por ahora solo está habilitado **P1** (decisión preliminar hasta que el
+> docente defina cómo se corrige). Las demás etapas se van agregando con un Pull Request cada una.
 
 ---
 
@@ -103,6 +104,16 @@ insert into padron (cedula, nombre, apellido, grupo) values
   ('44444444', 'Bruno', 'Silva', 'G2');
 ```
 (cédula solo números, 8 dígitos con el verificador; si la cédula está mal, la base la rechaza).
+
+### Prácticos: activar y fecha límite
+Pestaña **Prácticos**: tildá **Activo** para que los alumnos vean el práctico y poné la **fecha límite**. El alumno puede
+editar y volver a enviar su entrega hasta esa fecha; después queda cerrada (también lo controla el servidor).
+
+### Cómo entrega el alumno
+1. Entra, toca el práctico y completa la planilla (material, condiciones, determinaciones, criterio y resultados).
+2. Lo que escribe se guarda solo: al instante en el celular y en el servidor a los pocos segundos (“✓ Borrador guardado”).
+3. **Enviar entrega**: la app revisa que no falte nada y que los números estén bien escritos (nunca muestra si están bien
+   calculados). La versión enviada es la que ve el docente; si después cambia algo, tiene que tocar **Volver a enviar**.
 
 ### Blanquear una contraseña
 Pestaña **Padrón** → **Blanquear contraseña** → cédula → **Blanquear**. Aparece la contraseña temporal: dásela al alumno.
