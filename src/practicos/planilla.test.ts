@@ -39,14 +39,17 @@ describe('Planilla del alumno', () => {
     expect(err.get('dato:P')).toMatch(/fuera de rango/);
   });
 
-  it('el código Lab QA completa V20 y ajusta las determinaciones (bureta: 6)', () => {
+  it('al alumno NO se le completa el V20 desde la tabla; al docente sí', () => {
     const e = planillaVacia(p1, alumno);
-    aplicarCodigo(e, 'material', 'pa1005-26', aj);
-    expect(e.materiales.material.v20).toBe('10,02');
+    aplicarCodigo(e, 'material', 'PA1005-26', aj);
+    expect(e.materiales.material.v20).toBe('');
+    expect(e.materiales.material.vNominal).toBe('');
     expect(e.filas).toHaveLength(10);
-    aplicarCodigo(e, 'material', 'B1003', aj);
-    expect(e.materiales.material.tramos).toEqual(['2,00', '4,02', '6,02', '8,00', '10,00']);
-    expect(e.filas).toHaveLength(6);
+    aplicarCodigo(e, 'material', 'B1003-26', aj);
+    expect(e.materiales.material.tramos).toEqual(['', '', '', '', '']);
+    expect(e.filas).toHaveLength(6); // bureta: 6 determinaciones
+    aplicarCodigo(e, 'material', 'pa1005-26', aj, true);
+    expect(e.materiales.material.v20).toBe('10,02');
   });
 
   it('normalizar respeta lo guardado y fija nombre y grupo del perfil', () => {

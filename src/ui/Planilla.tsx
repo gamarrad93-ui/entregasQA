@@ -53,15 +53,19 @@ export default function Planilla(props: {
   ajustes: Ajustes;
   errores?: Map<string, string> | null;
   soloLectura?: boolean;
+  /** completar V20 desde la tabla Lab QA al escribir el código (nunca para el alumno) */
+  autocompletar?: boolean;
 }) {
   const { p, valor: e, ajustes } = props;
   const upd = props.onChange;
   const er = (k: string) => !!props.errores?.has(k);
 
+  const auto = !!props.autocompletar;
   const codigos = useMemo(() => {
+    if (!auto) return { pipeta: [], matraz: [], bureta: [] };
     const by = (t: string) => ajustes.materiales.filter((m) => m.tipo === t).map((m) => codigoCompleto(m.codigo));
     return { pipeta: by('pipeta'), matraz: by('matraz'), bureta: by('bureta') };
-  }, [ajustes.materiales]);
+  }, [ajustes.materiales, auto]);
 
   const esBuretaP1 = esBureta(e.materiales.material?.codigo);
 
@@ -101,7 +105,9 @@ export default function Planilla(props: {
       <section className="card space-y-3">
         <h3 className="card-title">🧪 Material</h3>
         <p className="text-xs text-slate-600 dark:text-slate-400">
-          Escribí el código Lab QA (ej. PA1005-26): el V20 se completa solo. La tolerancia la copiás de la etiqueta del material.
+          {auto
+            ? 'Al escribir el código Lab QA se completan V nominal y V20 desde la tabla.'
+            : 'Escribí el código del material (ej. PA1005-26), su volumen nominal, la tolerancia de la etiqueta y el V20 (para buretas, el V20 de cada tramo).'}
         </p>
         {p.materiales.map((s) => {
           const m = e.materiales[s.clave];
@@ -115,11 +121,11 @@ export default function Planilla(props: {
                   <Etiqueta texto="Código Lab QA" />
                   <Celda
                     numerico={false}
-                    list={lista}
+                    list={auto ? lista : undefined}
                     label={`${s.rol}: código`}
                     value={m.codigo}
                     error={er(`mat:${s.clave}:codigo`)}
-                    onChange={(v) => upd((x) => aplicarCodigo(x, s.clave, v, ajustes))}
+                    onChange={(v) => upd((x) => aplicarCodigo(x, s.clave, v, ajustes, auto))}
                   />
                 </div>
                 <div>

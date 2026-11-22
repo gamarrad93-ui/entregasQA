@@ -43,20 +43,25 @@ export function normalizarPlanilla(p: PracticaDef, x: Partial<Entrega> | null | 
   return e;
 }
 
-/** Al escribir un código Lab QA se completan V nominal y V20 desde la tabla. */
-export function aplicarCodigo(x: Entrega, slot: string, codigo: string, aj: Ajustes): void {
+/**
+ * Cambia el código del material.
+ *  - `autocompletar` (solo para el docente o pruebas): completa V nominal y V20 desde la tabla Lab QA.
+ *  - El alumno NO recibe autocompletado: escribe V nominal y V20 a mano.
+ * En P1, si la tabla de determinaciones está vacía, ajusta cuántas hay: 6 para bureta (código B…), 10 para pipeta.
+ */
+export function aplicarCodigo(x: Entrega, slot: string, codigo: string, aj: Ajustes, autocompletar = false): void {
   const m = x.materiales[slot];
   m.codigo = codigo;
+  if (x.practica === 'p1' && /^[A-Z]{1,2}\d{3,}/i.test(codigo.trim()) && x.filas.every((f) => Object.values(f.datos).every((v) => !v))) {
+    const n = esBureta(codigo) ? 6 : 10;
+    if (x.filas.length !== n) x.filas = Array.from({ length: n }, () => ({ datos: {}, promediable: true, resultados: {} }));
+  }
+  if (!autocompletar) return;
   const ref = buscarMaterial(aj.materiales, codigo);
   if (!ref) return;
   m.vNominal = String(ref.nominal).replace('.', ',');
   if (ref.v20 != null) m.v20 = ref.v20.toFixed(2).replace('.', ',');
   if (ref.tramos) m.tramos = ref.tramos.map((v) => v.toFixed(2).replace('.', ','));
-  // P1: n = 10 para pipetas, 6 para buretas (si la tabla todavía está vacía)
-  if (x.practica === 'p1' && x.filas.every((f) => Object.values(f.datos).every((v) => !v))) {
-    const n = ref.tipo === 'bureta' ? 6 : 10;
-    x.filas = Array.from({ length: n }, () => ({ datos: {}, promediable: true, resultados: {} }));
-  }
 }
 
 export const esBureta = (codigo: string | undefined) => /^B/i.test((codigo ?? '').trim());
